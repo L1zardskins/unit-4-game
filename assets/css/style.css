@@ -1,0 +1,49 @@
+
+
+.container {
+    color: white;
+    text-align: center;
+ }
+
+ body{
+    background-image: url("../images/background.jpg");
+    background-repeat: no-repeat;
+
+ }
+ 
+ .left-lifebar, .right-lifebar{
+    float: left;
+    /* visibility: hidden; */
+}
+
+#lifebar-row{
+    visibility: hidden;
+}
+
+#fightButtons{
+    visibility: hidden;
+}
+
+#hero-selection, #villain-selection{
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    width: 200px;
+    height: 200px;
+}
+
+#heroimage{
+    /* display: block; */
+    border: solid grey 1px;
+    width: 150px;
+    height: 150px;
+    background-color: rgba(105, 105, 105, 0.351);
+}
+
+#selectedFighter, #computerFighter{
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    width: 250px;
+    height: 400px;
+}
