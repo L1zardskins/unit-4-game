@@ -186,10 +186,13 @@ $(document).ready(function () {
         // console.log("Attack!!!")
         if (playerOneHealth > 0) {
             if (playerOne.health < 100) {
-                var addLife = playerOne.health + 75;
+                var missingHealth = (100 - playerOne.health) * .75
+                console.log(missingHealth)
+                var addLife = playerOne.health + missingHealth;
                 playerOne.health = playerOne.health + addLife;
                 console.log(playerOne.health)
                 playerOneHealth--
+                $(".healthPotion").text("Health Boost: " + playerOneHealth)
                 calculateLifebar();
             }
         }
@@ -262,10 +265,14 @@ function calculateLifebar() {
     var computerDeath = 100 - computerLife;
     $("#computerLife").attr("style", "width: " + computerLife + "%");
     $("#computerDeath").attr("style", "width: " + computerDeath + "%");
+    $("#healthValuesC").text(computer.health + "/100");
+
     var playerLife = playerOne.health;
     var playerDeath = 100 - playerLife;
     $("#playerLife").attr("style", "width: " + playerLife + "%");
     $("#playerDeath").attr("style", "width: " + playerDeath + "%");
+    $("#healthValuesP").text(playerOne.health + "/100");
+
     winOrLose();
 };
 
@@ -275,28 +282,38 @@ function winOrLose() {
         console.log("Computer Died!");
         alert("You defeated " + computer.name + "!!! Get Ready For Your Next Fight!");
         if (isVillain) {
-            villainList.splice(computer.index, 1)
-            console.log(villainList)
+            villainList.splice(computer.index, 1);
+            console.log(villainList);
         } else {
-            heroList.splice(computer.index, 1)
-            console.log(heroList)
+            heroList.splice(computer.index, 1);
+            console.log(heroList);
         }
         playerOneHealth++
+        $(".healthPotion").text("Health Boost: " + playerOneHealth)
         playerOne.power++
         nextAttacker("computer");
     } else if (playerOne.health <= 0) {
         console.log("Player Died!");
+        alert("Player Died!!! :'(")
         if (isVillain) {
-            villainList.splice(playerOne.index, 1)
-            console.log(villainList)
+            villainList.splice(playerOne.index, 1);
+            console.log(villainList);
         } else {
-            heroList.splice(playerOne.index, 1)
-            console.log(heroList)
+            heroList.splice(playerOne.index, 1);
+            console.log(heroList);
         }
+
+        alert("Game Over!!!");
+        location.reload();
+        // setUpGame();
 
         // nextAttacker("player");
     };
-
+    if (heroList.length == 0 || villainList.length == 0) {
+        alert("Game Over!!!");
+        location.reload();
+        // setUpGame();
+    }
 };
 
 function nextAttacker(playerOrComputer) {
@@ -304,9 +321,9 @@ function nextAttacker(playerOrComputer) {
     if (playerOrComputer == "computer") {
 
         if (isVillain) {
-            var length = villainList.length
+            var length = villainList.length;
         } else {
-            var length = heroList.length
+            var length = heroList.length;
         }
         // var randoAgain = Math.floor(Math.random() * length);
         // console.log(randoAgain)
@@ -315,8 +332,8 @@ function nextAttacker(playerOrComputer) {
         computer.index = villainList.indexOf(computerFighter);
 
         // console.log(villainList)
-        console.log(computerFighter)
-        computer.health = 100
+        console.log(computerFighter);
+        computer.health = 100;
 
         // computerOneFighter.setAttribute("id", "computerFighter");
         $("#computerFighter").attr("value", computerFighter);

@@ -29,6 +29,7 @@
         <div class="row" id="lifebar-row">
             <div class="col-md-6 left-lifebar">
                 <h2 id="player1-name">Player1</h2>
+                <h4 id="healthValuesP">0/100</h4>
                 <div class="progress">
                     <div id="playerLife" class="progress-bar bg-success playeronelife" role="progressbar" style="width: 100%" aria-valuenow="100"
                         aria-valuemin="0" aria-valuemax="100"></div>
@@ -38,6 +39,7 @@
             </div>
             <div class="col-md-6 right-lifebar">
                 <h2 id="computer-name">Computer</h2>
+                <h4 id="healthValuesC">0/100</h4>
                 <div class="progress">
                     <div id="computerLife" class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0"
                         aria-valuemax="100"></div>
@@ -57,7 +59,8 @@
         <div class="row fight-buttons" id="fightButtons">
             <div class="col-md-6">
                 <button type="button" class="btn btn-danger playerAttack">Attack!</button>
-                <button type="button" class="btn btn-warning playerHealth">Block!</button>
+                <button type="button" class="btn btn-warning playerHealth">Heal!</button>
+                <div class="healthPotion">Health Bonus: 0</div>
             </div>
             <div class="col-md-6">
                 <!-- <button type="button" class="btn btn-danger computerAttack">Attack!</button>
