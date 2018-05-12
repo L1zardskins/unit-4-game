@@ -18,12 +18,14 @@ var playerOne = {
     health: 100,
     image: "",
     power: 0,
+    index: -1,
 };
 var computer = {
     name: "",
     health: 100,
     image: "",
     power: 0,
+    index: -1,
 };
 var heroList = [
     "deadpool",
@@ -46,6 +48,10 @@ var selectedFighter = "";
 var computerFighter = "";
 var readyToFight = 0;
 var powerBonus = 0;
+var isVillain = false;
+var defeatedIndex = [];
+var playerOneHealth = 0;
+
 
 //Set game function
 
@@ -116,43 +122,83 @@ $(document).ready(function () {
         // console.log(selectedFighter);
         // selectedFighter = $(this).attr("value");
         if (heroList.indexOf(fighterName) != -1) {
-            console.log("Hero Selected");
+            // console.log("Hero Selected");
             document.getElementById("hero-selection").style.cssText = "visibility: hidden";
             readyToFight++;
-            console.log(readyToFight);
+            // console.log(readyToFight);
+            isVillain = false;
+            // playerOne.index = heroList.indexOf(fighterName);
 
         } else {
-            console.log("villian Selected");
+            // console.log("villian Selected");
             document.getElementById("villain-selection").style.cssText = "visibility: hidden";
             readyToFight++
-            console.log(readyToFight);
+            // console.log(readyToFight);
+            isVillain = true;
+            // playerOne.index = villainList.indexOf(fighterName);
 
         }
         if (readyToFight == 2) {
             console.log(readyToFight);
             document.getElementById("lifebar-row").style.cssText = "visibility: visible";
             computerFighter = fighterName;
-            startFight();
+            if (villainList.indexOf(computerFighter) != -1) {
+                computer.index = villainList.indexOf(computerFighter);
+                startFight();
+            } else {
+                computer.index = heroList.indexOf(computerFighter);
+                startFight();
+            }
+
+
 
         } else {
             selectedFighter = fighterName;
+            if (villainList.indexOf(selectedFighter) != -1) {
+                playerOne.index = villainList.indexOf(selectedFighter);
+            } else {
+                playerOne.index = heroList.indexOf(selectedFighter);
+            }
         }
         console.log("Player1 " + selectedFighter);
         console.log("Computer " + computerFighter);
+        console.log(playerOne);
+        console.log(computer);
 
     });
 
     //Attack function
     $(".playerAttack").on("click", function () {
         // console.log("Attack!!!")
-        var attackHP = Math.floor(Math.random() * 12) + 1;
-        console.log(attackHP);
+        var attackHP = (Math.floor(Math.random() * 5) + 1) + (playerOne.power / 10);
+        if (playerOne.name == "deadpool") {
+            attackHP++
+        }
+        console.log("playerAttack: " + attackHP);
         computer.health = computer.health - attackHP;
 
+        computerAttack();
         calculateLifebar();
+
     });
 
-})
+    $(".playerHealth").on("click", function () {
+        // console.log("Attack!!!")
+        if (playerOneHealth > 0) {
+            if (playerOne.health < 100) {
+                var addLife = playerOne.health + 75;
+                playerOne.health = playerOne.health + addLife;
+                console.log(playerOne.health)
+                playerOneHealth--
+                calculateLifebar();
+            }
+        }
+
+
+    });
+
+
+});
 
 function startFight() {
     console.log("Player1 " + selectedFighter);
@@ -197,16 +243,95 @@ function startFight() {
     }
     console.log(computer)
 
-}
+};
+
+function computerAttack() {
+    var attackHP = (Math.floor(Math.random() * 5) + 1) + (computer.power / 10);
+    if (computer.name == "deadpool") {
+        attackHP++
+    }
+    console.log("computerAttack: " + attackHP);
+    playerOne.health = playerOne.health - attackHP;
+};
 
 function calculateLifebar() {
-    console.log(computer.health);
-
+    console.log("Computer: " + computer.health);
+    console.log("Player: " + playerOne.health);
+    // console.log(computer.health / 100);
+    var computerLife = computer.health;
+    var computerDeath = 100 - computerLife;
+    $("#computerLife").attr("style", "width: " + computerLife + "%");
+    $("#computerDeath").attr("style", "width: " + computerDeath + "%");
+    var playerLife = playerOne.health;
+    var playerDeath = 100 - playerLife;
+    $("#playerLife").attr("style", "width: " + playerLife + "%");
+    $("#playerDeath").attr("style", "width: " + playerDeath + "%");
     winOrLose();
-}
+};
 
 function winOrLose() {
 
+    if (computer.health <= 0) {
+        console.log("Computer Died!");
+        alert("You defeated " + computer.name + "!!! Get Ready For Your Next Fight!");
+        if (isVillain) {
+            villainList.splice(computer.index, 1)
+            console.log(villainList)
+        } else {
+            heroList.splice(computer.index, 1)
+            console.log(heroList)
+        }
+        playerOneHealth++
+        playerOne.power++
+        nextAttacker("computer");
+    } else if (playerOne.health <= 0) {
+        console.log("Player Died!");
+        if (isVillain) {
+            villainList.splice(playerOne.index, 1)
+            console.log(villainList)
+        } else {
+            heroList.splice(playerOne.index, 1)
+            console.log(heroList)
+        }
+
+        // nextAttacker("player");
+    };
+
+};
+
+function nextAttacker(playerOrComputer) {
+
+    if (playerOrComputer == "computer") {
+
+        if (isVillain) {
+            var length = villainList.length
+        } else {
+            var length = heroList.length
+        }
+        // var randoAgain = Math.floor(Math.random() * length);
+        // console.log(randoAgain)
+
+        var computerFighter = villainList[Math.floor(Math.random() * length)];
+        computer.index = villainList.indexOf(computerFighter);
+
+        // console.log(villainList)
+        console.log(computerFighter)
+        computer.health = 100
+
+        // computerOneFighter.setAttribute("id", "computerFighter");
+        $("#computerFighter").attr("value", computerFighter);
+        $("#computerFighter").attr("src", "assets/images/" + computerFighter + "_fight.png");
+        $("#computerLife").attr("style", "width: " + computer.health + "%");
+        $("#computerDeath").attr("style", "width: 0%");
+
+
+        var rando = Math.floor(Math.random() * 5) + 1;
+        computer.power = randomPower[rando];
+        computer.name = computerFighter;
+        if (computer.name == "deadpool") {
+            computer.power = computer.power + 50;
+        }
+    }
 }
 
 // $("#heroimage").on("click", function () {
